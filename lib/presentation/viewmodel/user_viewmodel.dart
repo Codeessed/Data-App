@@ -62,7 +62,7 @@ class UserViewModel extends BaseViewModel{
     return existingItems;
   }
 
-  Future<AuthResponseModel> addUser(UserModel user) async {
+  Future<RegisterResponseModel> addUser(UserModel user) async {
     var status = '';
     var message = '';
     var userData;
@@ -82,12 +82,12 @@ class UserViewModel extends BaseViewModel{
         message = "This ${existings[0]} already exists.";
         userData = null;
       }
-      return AuthResponseModel(status: status, message: message, data: userData);
+      return RegisterResponseModel(status: status, message: message, data: userData);
     } catch (e) {
       print('error occurred while registering -> $e');
       setAppState(AppState.idle);
     }
-    return AuthResponseModel(status: status, message: message, data: userData);
+    return RegisterResponseModel(status: status, message: message, data: userData);
   }
 
   // Future<> loginUser() async {
