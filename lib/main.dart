@@ -127,9 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           IconButton(
               onPressed: () async {
-                var existing = await userViewModel.userExisting(UserModel(email: "e", username: 'use1', phone_number: 'phoe', password: 'fpasswrd', interests: ['as', 'f2']));
+                var existing = await userViewModel.addUser(UserModel(email: "email", username: 'usern1', phone_number: 'phoe', password: 'fpasswrd', interests: ['as', 'f2']));
                 print(existing);
-                ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(existing.isNotEmpty ? 'This ${existing[0]} already exists': 'This user can register')));
+                ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(existing.status == 'success' ? existing.message: existing.message)));
               },
               icon: const Icon(Icons.add)
           )

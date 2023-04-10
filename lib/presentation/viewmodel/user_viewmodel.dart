@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_app/common/base_view_model.dart';
+import 'package:data_app/model/data_model/auth_response_model.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
 import 'package:flutter/foundation.dart';
 
@@ -15,15 +16,6 @@ class UserViewModel extends BaseViewModel{
   // List<UserModel> get allUsers => _allUsers;
 
   final CollectionReference _users = FirebaseFirestore.instance.collection('users_data');
-
-  // getUsers() async {
-  //   _usersList = [];
-  //   await _users.get().then((QuerySnapshot querySnapshot){
-  //     _usersList.addAll((querySnapshot.docs)
-  //         .map((e) => UserModel.fromDocument(e)));
-  //   });
-  //   print(_usersList.toList());
-  // }
 
   Future<void> getUsers() async {
     try {
@@ -70,26 +62,41 @@ class UserViewModel extends BaseViewModel{
     return existingItems;
   }
 
-  Future<void> addUser(UserModel user) async {
-    List<UserModel> existingUser = [];
+  Future<AuthResponseModel> addUser(UserModel user) async {
+    var status = '';
+    var message = '';
+    var userData;
+    var existings = await userExisting(user);
     try {
       print('checking existing');
-      var existings = await userExisting(user);
-      existings.isEmpty? {
-        print('start add'),
+      if(existings.isEmpty){
         await _users
-            .add(user.toJson()).then((documentSnapShot) =>
-        print("Data add with id -> ${documentSnapShot.id}")
-        )
-      }:
-      // AppLoaderUtil.showSecondaryLoading(defaultLoadingMessage);
-
-      // AppLoaderUtil.dismiss();
-      getUsers();
+            .add(user.toJson()).then((documentSnapShot){
+          message = "Data add with id -> ${documentSnapShot.id}";
+          status = 'success';
+          userData = user;
+        }
+        );
+      }else{
+        status = 'error';
+        message = "This ${existings[0]} already exists.";
+        userData = null;
+      }
+      return AuthResponseModel(status: status, message: message, data: userData);
     } catch (e) {
-      print('error occurred adding -> $e');
+      print('error occurred while registering -> $e');
       setAppState(AppState.idle);
     }
+    return AuthResponseModel(status: status, message: message, data: userData);
   }
+
+  // Future<> loginUser() async {
+  //   _usersList = [];
+  //   await _users.get().then((QuerySnapshot querySnapshot){
+  //     _usersList.addAll((querySnapshot.docs)
+  //         .map((e) => UserModel.fromDocument(e)));
+  //   });
+  //   print(_usersList.toList());
+  // }
 
 }
