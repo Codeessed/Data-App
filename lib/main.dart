@@ -1,11 +1,15 @@
 import 'dart:collection';
+import 'dart:math';
 
+import 'package:data_app/data/shared_preference.dart';
+import 'package:data_app/model/data_model/auth_model/login/login_model.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,9 +62,12 @@ class _MyHomePageState extends State<MyHomePage> {
   //   });
   //   print(_usersList);
   // }
+  late SharedPreference prefs;
+
 
   @override
   void initState() {
+    prefs = SharedPreference();
     getUsers();
     super.initState();
   }
@@ -125,11 +132,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
             ),
           ),
+
           IconButton(
               onPressed: () async {
-                var existing = await userViewModel.addUser(UserModel(email: "email", username: 'usern1', phone_number: 'phoe', password: 'fpasswrd', interests: ['as', 'f2']));
-                print(existing);
-                ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(existing.status == 'success' ? existing.message: existing.message)));
+                // await prefs.removeString();
+                // var check = await prefs.checkValue();
+                // var save = await prefs.checkValue();
+                var read = await prefs.getString();
+                // var update = await userViewModel.updateUser('4qE1vkNv6ar5FxkbapTq', 'password', 'pasword_changed');
+                // var existing = await userViewModel.addUser(UserModel(email: "ema", username: 'usrn', phone_number: 'po', password: 'fpasswrd', interests: ['as', 'f2'], id: ''));
+                var login = await userViewModel.loginUser(LoginModel(email: "email", password: 'fpasswrd'));
+                // if(login.status == 'success'){
+                //   await prefs.setString(login.data);
+                //   ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(login.data)));
+                // }else{
+                //   ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(login.message)));
+                // }
+                // print(update);
+                // ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(login.status == 'success' ? prefs.setString(login.data): login.message)));
+                // ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(existing.status == 'success' ? existing.message: existing.message)));
+                ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text(UserModel.fromJson(read).interests!.isNotEmpty.toString())));
+                // ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text()));
               },
               icon: const Icon(Icons.add)
           )

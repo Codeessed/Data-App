@@ -7,15 +7,15 @@ class UserModel{
   String phone_number;
   String password;
   List? interests;
-  // String id;
+  String id;
 
-  UserModel({
+  UserModel ({
     required this.email,
     required this.username,
     required this.phone_number,
     required this.password,
     this.interests,
-    // required this.id
+    required this.id
 });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,14 +26,14 @@ class UserModel{
       password: json['password'] ?? '',
       interests: json['interests'] ?? [],
       // interests: json['interests'] is Iterable ? List.from(json['interests']): null,
-      // id: json['id'],
+      id: json['id'] ?? '',
     );
   }
 
   factory UserModel.fromDocument(QueryDocumentSnapshot<Object?> documentSnapshot) {
     final data = documentSnapshot.data()! as Map<String, dynamic>;
     return UserModel.fromJson(data);
-        // .copyWith(id: doc.id);
+        // .copyWith(id: documentSnapshot.id);
   }
 
   Map<String, dynamic> toJson() => {
@@ -43,5 +43,8 @@ class UserModel{
     "password": password,
     "interests": interests,
   };
+
+
+  // UserModel copyWith({required String id}) {}
 
 }

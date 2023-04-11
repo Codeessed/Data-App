@@ -1,7 +1,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_app/common/base_view_model.dart';
-import 'package:data_app/model/data_model/auth_response_model.dart';
+import 'package:data_app/model/data_model/auth_model/login/login_data_model.dart';
+import 'package:data_app/model/data_model/auth_model/login/login_model.dart';
+import 'package:data_app/model/data_model/auth_model/login/login_response_model.dart';
+import 'package:data_app/model/data_model/auth_model/register_response_model.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
 import 'package:flutter/foundation.dart';
 
@@ -11,6 +14,9 @@ class UserViewModel extends BaseViewModel{
 
   final List<UserModel> _allUsers = [];
   List<UserModel> get allUsers => _allUsers;
+
+  late LoginDataModel _user;
+  LoginDataModel get user => _user;
   //
   // final List<UserModel> _allUsers = [];
   // List<UserModel> get allUsers => _allUsers;
@@ -70,13 +76,20 @@ class UserViewModel extends BaseViewModel{
     try {
       print('checking existing');
       if(existings.isEmpty){
-        await _users
-            .add(user.toJson()).then((documentSnapShot){
-          message = "Data add with id -> ${documentSnapShot.id}";
+        var _usersDoc = _users.doc();
+        await _usersDoc.set({
+          "email": user.email,
+          "username": user.username,
+          "phone_number": user.phone_number,
+          "password": user.password,
+          "interests": user.interests,
+          "id": _usersDoc.id,
+        }).then((documentSnapShot){
+              getUsers();
+          message = "Registration successful";
           status = 'success';
           userData = user;
-        }
-        );
+        });
       }else{
         status = 'error';
         message = "This ${existings[0]} already exists.";
@@ -84,19 +97,76 @@ class UserViewModel extends BaseViewModel{
       }
       return RegisterResponseModel(status: status, message: message, data: userData);
     } catch (e) {
+      message = e.toString();
+      status = 'error';
       print('error occurred while registering -> $e');
       setAppState(AppState.idle);
     }
     return RegisterResponseModel(status: status, message: message, data: userData);
   }
 
-  // Future<> loginUser() async {
-  //   _usersList = [];
-  //   await _users.get().then((QuerySnapshot querySnapshot){
-  //     _usersList.addAll((querySnapshot.docs)
-  //         .map((e) => UserModel.fromDocument(e)));
-  //   });
-  //   print(_usersList.toList());
-  // }
+  Future<LoginResponseModel> loginUser(LoginModel loginModel) async {
+    late LoginResponseModel result;
+    List<UserModel> user = [];
+    try{
+      await _users
+          .where("email", isEqualTo: loginModel.email)
+          .where("password", isEqualTo: loginModel.password)
+          .get().then((QuerySnapshot querySnapshot){
+        user.addAll((querySnapshot.docs).map((e) => UserModel.fromDocument(e)));
+        if(user.isEmpty){
+          result = LoginResponseModel(status: 'error', message: 'Email or password not correct.');
+        }else{
+          result = LoginResponseModel(status: 'success', message: 'Welcome ${user[0].username}', data: user[0]);
+        }
+      }, onError: (e) => result = LoginResponseModel(status: 'error', message: 'An error occurred $e'));
+      // print(user);
+
+      // _user = LoginDataModel(email: user[0].email, username: user[0].username, phoneNumber: user[0].phone_number);
+    }catch (e){
+      result = LoginResponseModel(status: 'error', message: 'Error occurred -> $e');
+    }
+    return result;
+  }
+
+
+  Future<LoginResponseModel> updateDetails(LoginModel loginModel) async {
+    List<UserModel> user = [];
+    try{
+      await _users
+          .where("email", isEqualTo: loginModel.email)
+          .where("password", isEqualTo: loginModel.password)
+          .get().then((QuerySnapshot querySnapshot){
+        user.addAll((querySnapshot.docs).map((e) => UserModel.fromDocument(e)));
+      });
+      print(user);
+      if(user.isEmpty){
+        return LoginResponseModel(status: 'error', message: 'Email or password not correct.');
+      }
+      _user = LoginDataModel(email: user[0].email, username: user[0].username, phoneNumber: user[0].phone_number);
+      return LoginResponseModel(status: 'success', message: 'Welcome ${user[0].username}');
+    }catch (e){
+      return LoginResponseModel(status: 'error', message: 'Error occurred -> $e');
+    }
+  }
+
+  Future<RegisterResponseModel> updateUser(String id, String key, String value) async {
+    late RegisterResponseModel updateResponse;
+    try {
+        await _users.doc(id).update({
+          key:value
+        }).then((documentSnapShot) async {
+          getUsers();
+          // await _users.doc(id).get().then((value) {
+          //   updateResponse = RegisterResponseModel(status: 'success', message: '$key updated successfully', data: UserModel.fromJson(value.data() as Map<String, dynamic>));
+          // }, onError: (e) => updateResponse = RegisterResponseModel(status: 'error', message: 'An error occurred -> $e'));
+        }, onError: (e) => updateResponse = RegisterResponseModel(status: 'error', message: 'An error occurred -> $e'));
+    } catch (e) {
+      updateResponse = RegisterResponseModel(status: 'error', message: 'An error occurred -> $e');
+      setAppState(AppState.idle);
+    }
+    return updateResponse;
+  }
+
 
 }
