@@ -9,9 +9,19 @@ class SharedPreference{
     prefs.setString('user', json.encode(value));
   }
 
+  setBool() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('register', true);
+  }
+
   getString() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return json.decode(prefs.getString('user')!);
+  }
+
+  getBool() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('register');
   }
 
   removeString() async{
@@ -19,9 +29,14 @@ class SharedPreference{
     prefs.remove('user');
   }
 
-  checkValue() async{
+  checkLoggedIn() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.containsKey('user');
+  }
+
+  checkRegistered() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('register');
   }
 
 }

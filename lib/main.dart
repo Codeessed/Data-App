@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:data_app/data/shared_preference.dart';
 import 'package:data_app/model/data_model/auth_model/login/login_model.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
+import 'package:data_app/presentation/view/splash_screen.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: SplashScreen(),
     );
   }
 }
