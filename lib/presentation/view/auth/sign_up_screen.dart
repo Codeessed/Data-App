@@ -1,18 +1,17 @@
 import 'package:data_app/data/shared_preference.dart';
 import 'package:data_app/helpers/random.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
+import 'package:data_app/presentation/view/auth/sign_in_screen.dart';
 import 'package:data_app/presentation/view/common/buttons/general_button.dart';
-import 'package:data_app/presentation/view/interests_screen.dart';
-import 'package:data_app/presentation/view/sign_in_screen.dart';
+import 'package:data_app/presentation/view/auth/interests_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../common/loading.dart';
-import '../../helpers/constants/app_color.dart';
-import '../viewmodel/user_viewmodel.dart';
-import '../../common/validator.dart';
-import 'common/widget/text_field.dart';
+import '../../../common/loading.dart';
+import '../../../helpers/constants/app_color.dart';
+import '../../viewmodel/user_viewmodel.dart';
+import '../../../common/validator.dart';
+import '../common/widget/text_field.dart';
 
 class SignUpScreen extends StatefulWidget{
   const SignUpScreen({super.key});
@@ -61,7 +60,7 @@ class SignUpScreenState extends State<SignUpScreen>{
       child: LoadingState(
         appState: model.appState,
         child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(title: Text('Sign Up'),),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -143,11 +142,11 @@ class SignUpScreenState extends State<SignUpScreen>{
                           ),
                           GestureDetector(
                             onTap: () async {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const SignInScreen(),
-                                ),
+                                ), (route) => false
                               );
                             },
                             child: Text(
@@ -195,6 +194,7 @@ class SignUpScreenState extends State<SignUpScreen>{
                 context,
                 MaterialPageRoute(builder: (context) => const InterestScreen()),
                     (route) => false);
+            RandomFunction.toast(response.message, isError: false);
           }else{
             RandomFunction.toast(response.message, isError: true);
           }

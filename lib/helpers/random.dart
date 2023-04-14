@@ -6,6 +6,6 @@ class RandomFunction {
   static toast(String msg, {bool isError = false}) {
     showSimpleNotification(
         Text(msg),
-        background: isError ? Colors.red : AppColor.secondaryColor);
+        background: isError ? Colors.red : Colors.green);
   }
 }

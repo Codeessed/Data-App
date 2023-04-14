@@ -4,14 +4,16 @@ import 'package:data_app/helpers/constants/app_color.dart';
 import 'package:data_app/helpers/constants/list.dart';
 import 'package:data_app/main.dart';
 import 'package:data_app/presentation/view/bottom_nav/bottom_nav.dart';
+import 'package:data_app/presentation/view/common/text/headerText.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/random.dart';
-import '../../model/common_model/interest_list_data.dart';
-import '../../model/data_model/users_response_model.dart';
+import '../../../helpers/random.dart';
+import '../../../model/common_model/interest_list_data.dart';
+import '../../../model/data_model/users_response_model.dart';
+import '../common/buttons/general_button.dart';
 
 class InterestScreen extends StatefulWidget{
   const InterestScreen({super.key});
@@ -43,12 +45,12 @@ class InterestScreenState extends State<InterestScreen>{
         Widget item = Padding(
             padding: const EdgeInsets.all(5),
             child: FilterChip(
-                selectedColor: Colors.purple,
+                selectedColor: Theme.of(context).primaryColor,
                 side: BorderSide(
-                    color: (interestList[i].selected == true) ? Colors.white: Colors.purple,
+                    color: (interestList[i].selected == true) ? Colors.white: Theme.of(context).primaryColor,
                     style: BorderStyle.solid
                 ),
-                backgroundColor: (interestList[i].selected == true) ? Colors.purple: Colors.white,
+                backgroundColor: (interestList[i].selected == true) ? Theme.of(context).primaryColor: Colors.white,
                 label: Text(
                   interestList[i].name,
                 ),
@@ -78,12 +80,15 @@ class InterestScreenState extends State<InterestScreen>{
       child: Scaffold(
         appBar: AppBar(title: const Text('Interest Screen')),
         body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Pick an area that suits your interest :'),
-              SizedBox(height: 20,),
+              HeaderText(
+                Colors.black,
+                  'Pick an area that suits your interest :'
+              ),
+              SizedBox(height: 32,),
               Flexible(
                 flex: 1,
                 fit: FlexFit.tight,
@@ -92,15 +97,11 @@ class InterestScreenState extends State<InterestScreen>{
                   )
               ),
               SizedBox(height: 20,),
-              Container(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                    onPressed: () async {
-                      saveInterest(context, viewModel);
-                    },
-                    icon: Icon(Icons.interests_outlined),
-                    label: Text('Save Interests')
-                ),
+              GeneralButton(
+                text: 'Continue',
+                onTap: (){
+                  saveInterest(context, viewModel);
+                },
               )
             ],
           ),
@@ -117,10 +118,12 @@ class InterestScreenState extends State<InterestScreen>{
       ).then((response) async {
         if (response.status == 'success') {
           await prefs.setLoggedIn(response.data);
+          viewModel.setUser(response.data);
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const BottomNav()),
                   (route) => false);
+          RandomFunction.toast(response.message, isError: false);
         }else{
           RandomFunction.toast(response.message, isError: true);
         }

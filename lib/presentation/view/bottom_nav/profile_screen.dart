@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/loading.dart';
-import '../../common/validator.dart';
-import '../../helpers/constants/app_color.dart';
-import '../../helpers/random.dart';
-import '../viewmodel/user_viewmodel.dart';
-import 'common/buttons/general_button.dart';
-import 'common/widget/text_field.dart';
+import '../../../common/loading.dart';
+import '../../../common/validator.dart';
+import '../../../helpers/constants/app_color.dart';
+import '../../../helpers/random.dart';
+import '../../viewmodel/user_viewmodel.dart';
+import '../common/buttons/general_button.dart';
+import '../common/widget/text_field.dart';
 
 class ProfileScreen extends StatefulWidget{
   const ProfileScreen({super.key});
@@ -26,14 +26,14 @@ class ProfileScreenState extends State<ProfileScreen>{
     final viewModel = context.watch<UserViewModel>();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('Profile'),),
       body: SafeArea(
         child: Column(
           children: [
             Container(
               width: double.maxFinite,
               height: 250,
-              color: AppColor.primaryColor,
+              color: Theme.of(context).primaryColor.withOpacity(0.2),
               child: Center(
                 child: Icon(Icons.person, size: 220, color: Colors.black.withOpacity(0.2),),
               ),

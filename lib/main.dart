@@ -3,9 +3,8 @@ import 'dart:math';
 
 import 'package:data_app/data/shared_preference.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
-import 'package:data_app/presentation/view/interests_screen.dart';
-import 'package:data_app/presentation/view/sign_in_screen.dart';
-import 'package:data_app/presentation/view/splash_screen.dart';
+import 'package:data_app/presentation/view/auth/interests_screen.dart';
+import 'package:data_app/presentation/view/auth/splash_screen.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';

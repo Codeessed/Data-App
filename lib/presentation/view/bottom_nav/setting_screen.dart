@@ -1,19 +1,19 @@
 import 'package:data_app/data/shared_preference.dart';
-import 'package:data_app/presentation/view/edit_email_screen.dart';
-import 'package:data_app/presentation/view/edit_password_screen.dart';
-import 'package:data_app/presentation/view/edit_username_screen.dart';
-import 'package:data_app/presentation/view/sign_in_screen.dart';
+import 'package:data_app/presentation/view/edit/edit_email_screen.dart';
+import 'package:data_app/presentation/view/edit/edit_password_screen.dart';
+import 'package:data_app/presentation/view/edit/edit_username_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/loading.dart';
-import '../../common/validator.dart';
-import '../../helpers/constants/app_color.dart';
-import '../../helpers/random.dart';
-import '../viewmodel/user_viewmodel.dart';
-import 'common/buttons/general_button.dart';
-import 'common/widget/text_field.dart';
+import '../../../common/loading.dart';
+import '../../../common/validator.dart';
+import '../../../helpers/constants/app_color.dart';
+import '../../../helpers/random.dart';
+import '../../viewmodel/user_viewmodel.dart';
+import '../auth/sign_in_screen.dart';
+import '../common/buttons/general_button.dart';
+import '../common/widget/text_field.dart';
 
 class SettingsScreen extends StatefulWidget{
   const SettingsScreen({super.key});
@@ -32,7 +32,7 @@ class SettingsScreenState extends State<SettingsScreen>{
     var prefs = SharedPreference();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text('Settings'),),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

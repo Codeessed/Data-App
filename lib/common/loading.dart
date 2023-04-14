@@ -26,7 +26,7 @@ class LoadingState extends StatelessWidget {
             ? SizedBox()
             : Center(
           child: CircularProgressIndicator(
-            color: Colors.purpleAccent,
+            color: Theme.of(context).primaryColor,
           ),
         )
       ],

@@ -1,21 +1,22 @@
 import 'package:data_app/main.dart';
 import 'package:data_app/presentation/view/bottom_nav/bottom_nav.dart';
-import 'package:data_app/presentation/view/interests_screen.dart';
-import 'package:data_app/presentation/view/reset_password_screen.dart';
-import 'package:data_app/presentation/view/sign_up_screen.dart';
+import 'package:data_app/presentation/view/auth/interests_screen.dart';
+import 'package:data_app/presentation/view/auth/reset_password_screen.dart';
+import 'package:data_app/presentation/view/auth/sign_up_screen.dart';
+import 'package:data_app/presentation/view/common/text/headerText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/loading.dart';
-import '../../data/shared_preference.dart';
-import '../../helpers/constants/app_color.dart';
-import '../../helpers/random.dart';
-import '../../model/auth_model/login/login_model.dart';
-import '../viewmodel/user_viewmodel.dart';
-import 'common/buttons/general_button.dart';
-import '../../common/validator.dart';
-import 'common/widget/text_field.dart';
+import '../../../common/loading.dart';
+import '../../../common/validator.dart';
+import '../../../data/shared_preference.dart';
+import '../../../helpers/constants/app_color.dart';
+import '../../../helpers/random.dart';
+import '../../../model/auth_model/login/login_model.dart';
+import '../../viewmodel/user_viewmodel.dart';
+import '../common/buttons/general_button.dart';
+import '../common/widget/text_field.dart';
 
 class SignInScreen extends StatefulWidget{
   const SignInScreen({super.key});
@@ -52,7 +53,7 @@ class SignInScreenState extends State<SignInScreen>{
       child: LoadingState(
         appState: viewModel.appState,
         child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(title: Text('Sign In'),),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -62,7 +63,10 @@ class SignInScreenState extends State<SignInScreen>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Login to your account'),
+                      HeaderText(
+                        Colors.black,
+                        "Enter login detail"
+                      ),
                       SizedBox(
                         height: 32,
                       ),
@@ -98,15 +102,21 @@ class SignInScreenState extends State<SignInScreen>{
                       Row(
                         children: [
                           Spacer(),
-                          InkWell(
+                          GestureDetector(
                             onTap: (){
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
                               );
                             },
-                            child: Text('Forgot Password?'),
-                          )
+                            child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: AppColor.secondaryColor),
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -167,6 +177,7 @@ class SignInScreenState extends State<SignInScreen>{
           if(response.data!.interests!.isNotEmpty){
             await prefs.setRegistered(response.data);
             await prefs.setLoggedIn(response.data);
+            viewModel.setUser(response.data);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => BottomNav()),
@@ -174,11 +185,13 @@ class SignInScreenState extends State<SignInScreen>{
           }else{
             await prefs.setRegistered(response.data);
             await prefs.setLoggedIn(response.data);
+            viewModel.setUser(response.data);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const InterestScreen()),
                     (route) => false);
           }
+          RandomFunction.toast(response.message, isError: false);
         }else{
           RandomFunction.toast(response.message, isError: true);
         }

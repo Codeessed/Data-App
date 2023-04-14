@@ -1,14 +1,14 @@
 
 import 'package:data_app/main.dart';
 import 'package:data_app/presentation/view/bottom_nav/bottom_nav.dart';
-import 'package:data_app/presentation/view/interests_screen.dart';
-import 'package:data_app/presentation/view/sign_in_screen.dart';
-import 'package:data_app/presentation/view/sign_up_screen.dart';
+import 'package:data_app/presentation/view/auth/interests_screen.dart';
+import 'package:data_app/presentation/view/auth/sign_up_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/shared_preference.dart';
-import '../../model/data_model/users_response_model.dart';
+import '../../../data/shared_preference.dart';
+import '../../../model/data_model/users_response_model.dart';
+import 'sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({super.key});

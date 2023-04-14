@@ -1,53 +1,45 @@
 import 'package:data_app/main.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
 import 'package:data_app/presentation/view/bottom_nav/bottom_nav.dart';
-import 'package:data_app/presentation/view/interests_screen.dart';
-import 'package:data_app/presentation/view/reset_password_screen.dart';
-import 'package:data_app/presentation/view/sign_up_screen.dart';
+import 'package:data_app/presentation/view/auth/interests_screen.dart';
+import 'package:data_app/presentation/view/auth/reset_password_screen.dart';
+import 'package:data_app/presentation/view/auth/sign_up_screen.dart';
+import 'package:data_app/presentation/view/common/text/headerText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/loading.dart';
-import '../../data/shared_preference.dart';
-import '../../helpers/constants/app_color.dart';
-import '../../helpers/random.dart';
-import '../../model/auth_model/login/login_model.dart';
-import '../viewmodel/user_viewmodel.dart';
-import 'common/buttons/general_button.dart';
-import '../../common/validator.dart';
-import 'common/widget/text_field.dart';
+import '../../../common/loading.dart';
+import '../../../data/shared_preference.dart';
+import '../../../helpers/constants/app_color.dart';
+import '../../../helpers/random.dart';
+import '../../../model/auth_model/login/login_model.dart';
+import '../../viewmodel/user_viewmodel.dart';
+import '../common/buttons/general_button.dart';
+import '../../../common/validator.dart';
+import '../common/widget/text_field.dart';
 
-class EditPasswordScreen extends StatefulWidget{
-  const EditPasswordScreen({super.key});
+class EditEmailScreen extends StatefulWidget{
+  const EditEmailScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => EditPasswordScreenState();
+  State<StatefulWidget> createState() => EditEmailScreenState();
 
 }
 
-class EditPasswordScreenState extends State<EditPasswordScreen>{
+class EditEmailScreenState extends State<EditEmailScreen>{
 
-  var password = '';
-  final TextEditingController _oldPassword = TextEditingController();
-  final TextEditingController _newPassword = TextEditingController();
-  final TextEditingController _confirmPassword = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var prefs = SharedPreference();
 
   late UserModel userData;
 
   @override
-  void initState() {
-    super.initState();
-    _newPassword.addListener(updatePassword);
-  }
-
-  @override
   void dispose() {
-    _oldPassword.dispose();
-    _newPassword.dispose();
-    _confirmPassword.dispose();
+    _email.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -65,7 +57,7 @@ class EditPasswordScreenState extends State<EditPasswordScreen>{
       child: LoadingState(
         appState: viewModel.appState,
         child: Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(title: Text('Edit Email')),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -75,38 +67,29 @@ class EditPasswordScreenState extends State<EditPasswordScreen>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Enter details to edit password'),
+                      HeaderText(
+                        Colors.black,
+                          'Enter details to edit email'),
                       SizedBox(
                         height: 32,
                       ),
                       Field(
-                        hint: "Old Password",
+                        hint: "Email",
                         prefixIcon: Icon(Icons.person),
-                        controller: _oldPassword,
+                        controller: _email,
                         textInputType: TextInputType.emailAddress,
-                        validate: FieldValidator.required(),
+                        validate: FieldValidator.email(),
                       ),
                       SizedBox(
                         height: 15,
                       ),
                       Field(
-                        hint: "New Password",
+                        hint: "Password",
                         isPassword: true,
                         prefixIcon: Icon(Icons.password),
-                        controller: _newPassword,
+                        controller: _password,
                         textInputType: TextInputType.visiblePassword,
-                        validate: FieldValidator.minLength(5)
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Field(
-                          hint: "Confirm Password",
-                          isPassword: true,
-                          prefixIcon: Icon(Icons.password),
-                          controller: _confirmPassword,
-                          textInputType: TextInputType.visiblePassword,
-                          validate: FieldValidator.equalTo(password)
+                        validate: FieldValidator.required()
                       ),
                       SizedBox(
                         height: 50,
@@ -114,7 +97,7 @@ class EditPasswordScreenState extends State<EditPasswordScreen>{
                       GeneralButton(
                           text: "Proceed",
                           onTap: () {
-                            editPassword(context, viewModel);
+                            editEmail(context, viewModel);
                           }),
                     ],
                   ),
@@ -132,24 +115,17 @@ class EditPasswordScreenState extends State<EditPasswordScreen>{
     userData = UserModel.fromJson(await prefs.getLoggedIn());
   }
 
-  updatePassword(){
-    setState(() {
-      password = _newPassword.text;
-    });
-  }
-
-
-  void editPassword(BuildContext context, UserViewModel viewModel) {
+  void editEmail(BuildContext context, UserViewModel viewModel) {
     if (formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
       viewModel.authenticateAndUpdate(
-          password: _oldPassword.text.trim(),
+          password: _password.text.trim(),
           id: userData.id,
-          key: 'password',
-          value: _newPassword.text.trim()
+          key: 'email',
+          value: _email.text.trim()
       ).then((response) async {
         if (response.status == 'success'){
-          var newUserData = UserModel(email: userData.email, username: userData.username, phone_number: userData.phone_number, password: _newPassword.text.trim(), id: userData.id, interests: userData.interests);
+          var newUserData = UserModel(email: _email.text.trim(), username: userData.username, phone_number: userData.phone_number, password: userData.password, id: userData.id, interests: userData.interests);
           await prefs.setLoggedIn(newUserData);
           viewModel.setUser(newUserData);
           RandomFunction.toast(response.message, isError: false);

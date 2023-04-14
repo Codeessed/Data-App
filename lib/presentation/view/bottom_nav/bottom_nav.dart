@@ -1,17 +1,16 @@
 import 'package:data_app/data/shared_preference.dart';
 import 'package:data_app/main.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
-import 'package:data_app/presentation/view/discover_screen.dart';
-import 'package:data_app/presentation/view/profile_screen.dart';
-import 'package:data_app/presentation/view/reset_password_screen.dart';
-import 'package:data_app/presentation/view/setting_screen.dart';
-import 'package:data_app/presentation/view/sign_in_screen.dart';
+import 'package:data_app/presentation/view/bottom_nav/discover_screen.dart';
+import 'package:data_app/presentation/view/bottom_nav/profile_screen.dart';
+import 'package:data_app/presentation/view/auth/reset_password_screen.dart';
+import 'package:data_app/presentation/view/bottom_nav/setting_screen.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../helpers/constants/app_color.dart';
 import '../../../model/common_model/bottom_nav_model.dart';
-import '../buddies_screen.dart';
+import 'buddies_screen.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -51,13 +50,12 @@ class _BottomNavState extends State<BottomNav> {
   Scaffold build(BuildContext context) {
     userViewModel = context.watch<UserViewModel>();
 
-    storeDataToViewmodel();
 
     return Scaffold(
       body: bottomNav[userViewModel.pageIndex].screen,
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
-        selectedItemColor: AppColor.secondaryColor,
+        selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
         currentIndex: userViewModel.pageIndex,
         onTap: (index) {
@@ -72,10 +70,4 @@ class _BottomNavState extends State<BottomNav> {
       ),
     );
   }
-
-  storeDataToViewmodel() async {
-    var userData = await prefs.getLoggedIn();
-    userViewModel.setUser(UserModel.fromJson(userData));
-  }
-
 }
