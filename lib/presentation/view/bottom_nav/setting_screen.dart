@@ -13,6 +13,7 @@ import '../../../helpers/random.dart';
 import '../../viewmodel/user_viewmodel.dart';
 import '../auth/sign_in_screen.dart';
 import '../common/buttons/general_button.dart';
+import '../common/dialog/general_dialog.dart';
 import '../common/widget/text_field.dart';
 
 class SettingsScreen extends StatefulWidget{
@@ -117,12 +118,27 @@ class SettingsScreenState extends State<SettingsScreen>{
                   ),
                   SizedBox(height: 10,),
                   GestureDetector(
-                    onTap: () async {
-                      viewModel.setIndex(0);
-                      await prefs.removeLogIn();
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                        builder: (context) => const SignInScreen(),
-                      ), (route) => false);
+                    onTap: ()  {
+                      GeneralDialog(
+                          onYes: () async {
+                            viewModel.setIndex(0);
+                            await prefs.removeLogIn();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                  const SignInScreen(),
+                                ),
+                                    (route) => false);
+                          },
+                          title: "Log out",
+                          body: 'Are you sure you want to logout?',
+                          iconData: Icons.logout,
+                          context: context)
+                          .show();
+                      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                      //   builder: (context) => const SignInScreen(),
+                      // ), (route) => false);
                     },
                     child: Container(
                       decoration: BoxDecoration(

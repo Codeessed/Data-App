@@ -68,8 +68,8 @@ class SplashScreenState extends State<SplashScreen>{
   @override
   Widget build(BuildContext context) {
 
-    return const Scaffold(
-      body: Center(child: Icon(Icons.supervised_user_circle, color: Colors.purple, size: 150,)),
+    return Scaffold(
+      body: Center(child: Icon(Icons.supervised_user_circle, color: Theme.of(context).primaryColor, size: 150,)),
     );
 
   }

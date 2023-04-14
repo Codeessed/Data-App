@@ -49,6 +49,7 @@ class _BottomNavState extends State<BottomNav> {
   @override
   Scaffold build(BuildContext context) {
     userViewModel = context.watch<UserViewModel>();
+    setUser();
 
 
     return Scaffold(
@@ -69,5 +70,9 @@ class _BottomNavState extends State<BottomNav> {
         }).toList(),
       ),
     );
+  }
+
+  setUser() async {
+    userViewModel.setUser(UserModel.fromJson(await prefs.getLoggedIn()));
   }
 }

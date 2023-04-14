@@ -33,19 +33,16 @@ class UserViewModel extends BaseViewModel{
     notifyListeners();
   }
 
-  Future<void> getUsers() async {
+  Future<void> getUsers(String email) async {
     try {
-      // AppLoaderUtil.showSecondaryLoading(defaultLoadingMessage);
-      print('start get');
+      setAppState(AppState.loading);
       _allUsers.clear();
-      await _users.get().then((QuerySnapshot querySnapshot){
+      await _users.where('email', isNotEqualTo: email).get().then((QuerySnapshot querySnapshot){
         _allUsers.addAll(querySnapshot.docs.map((e) => UserModel.fromDocument(e)));
       });
-      // AppLoaderUtil.dismiss();
-      print(_allUsers);
       notifyListeners();
+      setAppState(AppState.idle);
     } catch (e) {
-      print('error occurred getting');
       setAppState(AppState.idle);
     }
   }

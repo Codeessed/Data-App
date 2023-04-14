@@ -118,7 +118,6 @@ class InterestScreenState extends State<InterestScreen>{
       ).then((response) async {
         if (response.status == 'success') {
           await prefs.setLoggedIn(response.data);
-          viewModel.setUser(response.data);
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const BottomNav()),

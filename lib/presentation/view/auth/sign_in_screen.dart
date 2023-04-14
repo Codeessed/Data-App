@@ -185,7 +185,6 @@ class SignInScreenState extends State<SignInScreen>{
           }else{
             await prefs.setRegistered(response.data);
             await prefs.setLoggedIn(response.data);
-            viewModel.setUser(response.data);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const InterestScreen()),
