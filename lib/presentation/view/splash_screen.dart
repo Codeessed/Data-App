@@ -1,5 +1,6 @@
 
 import 'package:data_app/main.dart';
+import 'package:data_app/presentation/view/bottom_nav/bottom_nav.dart';
 import 'package:data_app/presentation/view/interests_screen.dart';
 import 'package:data_app/presentation/view/sign_in_screen.dart';
 import 'package:data_app/presentation/view/sign_up_screen.dart';
@@ -32,45 +33,42 @@ class SplashScreenState extends State<SplashScreen>{
   }
 
   navigate() async {
-
     isRegistered = await prefs.checkRegistered();
     isLoggedIn = await prefs.checkLoggedIn();
-    loginData = UserModel.fromJson(await prefs.getString());
-    await Future.delayed(const Duration(seconds: 1), () {
+    await Future.delayed(const Duration(seconds: 1), () async {
       if(isRegistered){
-        if(isLoggedIn){
+        if(isLoggedIn) {
+          loginData = UserModel.fromJson(await prefs.getLoggedIn());
           if(loginData.interests!.isNotEmpty){
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage(title: "title")),
-                    (route) => false);
-          }else{
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const InterestScreen()),
-                    (route) => false);
-          }
-        }else{
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const SignInScreen()),
-                  (route) => false);
-        }
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BottomNav()),
+                        (route) => false);
+              }else{
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InterestScreen()),
+                        (route) => false);
+              }
+            }else{
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignInScreen()),
+                      (route) => false);
+            }
       }else{
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const SignUpScreen()),
                 (route) => false);
       }
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loggedIn.toString())));
-      // print(loggedIn.toString());
     });
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return const Scaffold(
       body: Center(child: Icon(Icons.supervised_user_circle, color: Colors.purple, size: 150,)),
     );
 

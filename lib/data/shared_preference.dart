@@ -4,27 +4,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreference{
 
-  setString(value) async{
+  setLoggedIn(value) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('user', json.encode(value));
   }
 
-  setBool() async{
+  setRegistered(value) async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('register', true);
+    prefs.setString('register', json.encode(value));
   }
 
-  getString() async{
+  getLoggedIn() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return json.decode(prefs.getString('user')!);
   }
 
-  getBool() async{
+  getRegistered() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('register');
+    return json.decode(prefs.getString('register')!);
   }
 
-  removeString() async{
+  removeLogIn() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('user');
   }

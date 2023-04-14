@@ -25,13 +25,12 @@ class UserModel{
       phone_number: json['phone_number'] ?? '',
       password: json['password'] ?? '',
       interests: json['interests'] ?? [],
-      // interests: json['interests'] is Iterable ? List.from(json['interests']): null,
-      id: json['id'] ?? '',
+      id: json['id'] ?? ''
     );
   }
 
-  factory UserModel.fromDocument(QueryDocumentSnapshot<Object?> documentSnapshot) {
-    final data = documentSnapshot.data()! as Map<String, dynamic>;
+  factory UserModel.fromDocument(value) {
+    final data = value.data()! as Map<String, dynamic>;
     return UserModel.fromJson(data);
         // .copyWith(id: documentSnapshot.id);
   }
@@ -42,9 +41,9 @@ class UserModel{
     "phone_number": phone_number,
     "password": password,
     "interests": interests,
+    "id": id
   };
 
 
-  // UserModel copyWith({required String id}) {}
 
 }

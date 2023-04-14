@@ -2,15 +2,19 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:data_app/data/shared_preference.dart';
-import 'package:data_app/model/data_model/auth_model/login/login_model.dart';
 import 'package:data_app/model/data_model/users_response_model.dart';
+import 'package:data_app/presentation/view/interests_screen.dart';
+import 'package:data_app/presentation/view/sign_in_screen.dart';
 import 'package:data_app/presentation/view/splash_screen.dart';
 import 'package:data_app/presentation/viewmodel/user_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'model/auth_model/login/login_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,12 +37,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return OverlaySupport.global(
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const SplashScreen(),
       ),
-      home: SplashScreen(),
     );
   }
 }
@@ -139,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // await prefs.removeString();
                 // var check = await prefs.checkValue();
                 // var save = await prefs.checkValue();
-                var read = await prefs.getString();
+                var read = await prefs.getLoggedIn();
                 // var update = await userViewModel.updateUser('4qE1vkNv6ar5FxkbapTq', 'password', 'pasword_changed');
                 // var existing = await userViewModel.addUser(UserModel(email: "ema", username: 'usrn', phone_number: 'po', password: 'fpasswrd', interests: ['as', 'f2'], id: ''));
                 var login = await userViewModel.loginUser(LoginModel(email: "email", password: 'fpasswrd'));
